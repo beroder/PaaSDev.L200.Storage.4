@@ -19,13 +19,14 @@ namespace _WriteToTable
             // Parse the connection string and return a reference to the storage account.
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
                 CloudConfigurationManager.GetSetting("StorageConnectionString"));
+            string storageAccountName = storageAccount.Credentials.AccountName;
 
             try
             {
                 string sasString = GetAccountSASToken();
 
                 StorageCredentials accountSAS = new StorageCredentials(sasString);
-                CloudStorageAccount accountWithSAS = new CloudStorageAccount(accountSAS, "storagelab4m4vncfbha6qwi", endpointSuffix: null, useHttps: true);
+                CloudStorageAccount accountWithSAS = new CloudStorageAccount(accountSAS, storageAccountName, endpointSuffix: null, useHttps: true);
 
                 // Create a new customer entity.
                 CustomerEntity customer1 = new CustomerEntity(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
@@ -40,18 +41,22 @@ namespace _WriteToTable
                 peopleTable.CreateIfNotExists();
 
                 // Create the TableOperation that inserts the customer entity.
-                Console.WriteLine("Writing to table...");
+                Console.Write("Writing to entity with partition key {0} and \n row key {1} to table...\n", customer1.PartitionKey, customer1.RowKey);
                 TableOperation insertOperation = TableOperation.Insert(customer1);
-                Console.WriteLine("Writing to success!");
-                Console.WriteLine("TimeStamp: {0} UTC", DateTime.Now.ToUniversalTime().ToString());
 
                 // Execute the insert operation.
                 peopleTable.Execute(insertOperation);
+                Console.WriteLine("Writing to success!");
+                Console.WriteLine("TimeStamp: {0} UTC", DateTime.Now.ToUniversalTime().ToString());
+                Console.WriteLine("Press any key to continue");
+                Console.ReadKey();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message.ToString());
                 Console.WriteLine("TimeStamp: {0} UTC", DateTime.Now.ToUniversalTime().ToString());
+                Console.WriteLine("Press any key to continue");
+                Console.ReadKey();
             }
         }
 
