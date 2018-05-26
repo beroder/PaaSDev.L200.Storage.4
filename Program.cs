@@ -41,7 +41,7 @@ namespace _WriteToTable
                 peopleTable.CreateIfNotExists();
 
                 // Create the TableOperation that inserts the customer entity.
-                Console.Write("Writing to entity with partition key {0} and \n row key {1} to table...\n", customer1.PartitionKey, customer1.RowKey);
+                Console.Write("Writing entity with partition key {0} and \n row key {1} to table...\n", customer1.PartitionKey, customer1.RowKey);
                 TableOperation insertOperation = TableOperation.Insert(customer1);
 
                 // Execute the insert operation.
